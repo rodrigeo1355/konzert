@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 80" fill="none">
+  <defs>
+    <linearGradient id="cobaltW" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e3a8a"></stop>
+      <stop offset="1" stop-color="#06b6d4"></stop>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="76" height="76" rx="18" fill="#0a0a0a"></rect>
+  <circle cx="40" cy="40" r="8" fill="url(#cobaltW)"></circle>
+  <circle cx="40" cy="40" r="16" stroke="url(#cobaltW)" stroke-width="1.8" fill="none" opacity="0.75"></circle>
+  <circle cx="40" cy="40" r="24" stroke="url(#cobaltW)" stroke-width="1.8" fill="none" opacity="0.45"></circle>
+  <circle cx="40" cy="40" r="32" stroke="url(#cobaltW)" stroke-width="1.8" fill="none" opacity="0.22"></circle>
+  <text x="94" y="52" font-family="&#39;Geist&#39;,&#39;Inter&#39;,&#39;Helvetica Neue&#39;,Arial,sans-serif" font-size="40" font-weight="900" letter-spacing="-1.5" fill="white">konzert</text>
+</svg>

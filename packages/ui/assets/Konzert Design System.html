@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Konzert · Design System (Cobalto)</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg-page);
+    color: var(--fg-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { max-width: 1200px; margin: 0 auto; padding: 64px 48px 120px; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    padding: 64px 48px 72px;
+    border-radius: var(--radius-xl);
+    background: var(--color-near-black);
+    border: 1px solid var(--border-subtle);
+    overflow: hidden;
+    margin-bottom: 80px;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background: var(--gradient-cobalt-radial);
+    opacity: 0.22;
+    filter: blur(60px);
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    margin: 0 0 20px;
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    margin: 0 0 20px;
+  }
+  .hero h1 .grad {
+    background: var(--gradient-cobalt);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero p {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--fg-secondary);
+    max-width: 580px;
+    margin: 0 0 32px;
+  }
+  .hero-logo { width: 96px; height: 96px; margin-bottom: 32px; }
+
+  /* Section */
+  section { margin-bottom: 80px; }
+  .sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); }
+  .sec-num { font-family: var(--font-mono); font-size: 12px; color: var(--fg-very-muted); }
+  .sec-title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  .sec-sub { font-size: 14px; color: var(--fg-muted); margin-left: auto; }
+
+  /* Grid utilities */
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  /* Color cards */
+  .swatch-card {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+  }
+  .swatch-color { height: 110px; display: flex; align-items: flex-end; padding: 12px; }
+  .swatch-meta { padding: 12px 14px; }
+  .swatch-name { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); }
+  .swatch-token { font-family: var(--font-mono); font-size: 10px; color: var(--fg-very-muted); margin-top: 2px; }
+
+  /* Big gradient block */
+  .gradient-card {
+    grid-column: span 2;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+  }
+  .gradient-block {
+    height: 220px;
+    background: var(--gradient-cobalt);
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+  }
+  .gradient-block .label {
+    color: rgba(255,255,255,0.85);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
+  /* Type specimen */
+  .type-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 28px 24px;
+  }
+  .type-spec-h1 { font-size: 56px; font-weight: 900; letter-spacing: -0.045em; line-height: 0.95; margin: 0 0 8px; }
+  .type-spec-h2 { font-size: 24px; font-weight: 700; margin: 0 0 8px; }
+  .type-spec-body { font-size: 16px; line-height: 1.5; color: var(--fg-secondary); margin: 0; }
+  .type-spec-mono { font-family: var(--font-mono); font-size: 14px; color: var(--accent); margin: 0; }
+  .type-meta { display: flex; gap: 14px; margin-top: 12px; font-family: var(--font-mono); font-size: 10px; color: var(--fg-very-muted); }
+
+  /* Component specimens */
+  .comp-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .comp-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-very-muted); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: var(--radius-full);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.12s, opacity 0.12s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary {
+    background: var(--gradient-cobalt-90);
+    color: white;
+  }
+  .btn-secondary {
+    background: var(--bg-input);
+    color: var(--fg-primary);
+    border: 1px solid var(--border-default);
+  }
+  .btn-ghost { background: transparent; color: var(--accent); }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .pill-cobalt {
+    background: var(--color-glow-cobalt);
+    color: var(--accent);
+    border: 1px solid var(--border-focus);
+  }
+  .pill-neutral {
+    background: var(--bg-input);
+    color: var(--fg-secondary);
+    border: 1px solid var(--border-default);
+  }
+
+  .input {
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    color: var(--fg-primary);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    width: 100%;
+  }
+  .input:focus { outline: none; border-color: var(--accent); }
+
+  /* Event card mock */
+  .event-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .event-cover {
+    aspect-ratio: 16/10;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(6,182,212,0.5), transparent 50%),
+      radial-gradient(ellipse at 70% 80%, rgba(30,58,138,0.7), transparent 60%),
+      #0a0a0a;
+    position: relative;
+  }
+  .event-cover .tag {
+    position: absolute; top: 12px; left: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+    color: var(--accent);
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .event-meta { padding: 14px 16px; }
+  .event-title { font-size: 15px; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .event-sub { font-size: 12px; color: var(--fg-muted); margin: 0; }
+
+  /* Logo presentation */
+  .logo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .logo-tile {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .logo-tile.dark { background: var(--color-near-black); }
+  .logo-tile.cream { background: var(--color-cream); }
+  .logo-tile.brand {
+    background: var(--gradient-cobalt);
+  }
+  .logo-tile.brand img { filter: brightness(0) invert(1); opacity: 0.95; }
+
+  .wordmark-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .wordmark-tile {
+    padding: 32px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .wordmark-tile.dark { background: var(--color-near-black); }
+  .wordmark-tile.cream { background: var(--color-cream); }
+
+  /* Footer */
+  footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-very-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-content">
+      <img src="assets/konzert-logo.svg" alt="Konzert" class="hero-logo"/>
+      <p class="eyebrow">Design System · v2.0 · Cobalto edition</p>
+      <h1>identidad <span class="grad">propia</span><br/>para descubrir<br/>eventos en vivo</h1>
+      <p>El sistema visual de Konzert ahora habla Cobalto: un degradé tech, frío y único que se aleja del verde-app genérico. Música, deporte, teatro, comedia — todo en un radar.</p>
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-primary">Explorar componentes</button>
+        <button class="btn btn-secondary">Descargar assets</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 01 LOGO -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">Logo</h2>
+      <span class="sec-sub">Base Radar — círculos concéntricos</span>
+    </div>
+
+    <div class="grid grid-2" style="align-items: stretch;">
+      <div class="logo-grid">
+        <div class="logo-tile dark"><img src="assets/konzert-logo.svg" width="120" height="120"/></div>
+        <div class="logo-tile cream"><img src="assets/konzert-logo.svg" width="120" height="120"/></div>
+        <div class="logo-tile brand"><img src="assets/konzert-logo.svg" width="120" height="120"/></div>
+        <div class="logo-tile dark"><img src="assets/konzert-logo.svg" width="64" height="64"/></div>
+        <div class="logo-tile dark"><img src="assets/konzert-logo.svg" width="40" height="40"/></div>
+        <div class="logo-tile dark"><img src="assets/konzert-logo.svg" width="24" height="24"/></div>
+      </div>
+      <div class="wordmark-row">
+        <div class="wordmark-tile dark"><img src="assets/konzert-wordmark.svg" width="320"/></div>
+        <div class="wordmark-tile cream"><img src="assets/konzert-wordmark-light.svg" width="320"/></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 COLOR -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Color · Cobalto</h2>
+      <span class="sec-sub">Degradé #1e3a8a → #06b6d4</span>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="gradient-card">
+        <div class="gradient-block">
+          <span class="label">--gradient-cobalt · 135°</span>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#1e3a8a"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Cobalto Deep</p>
+          <p class="swatch-hex">#1e3a8a</p>
+          <p class="swatch-token">--color-cobalt-800</p>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#06b6d4"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Cobalto Bright</p>
+          <p class="swatch-hex">#06b6d4</p>
+          <p class="swatch-token">--color-cobalt-400 · accent</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-4" style="margin-top:16px">
+      <div class="swatch-card"><div class="swatch-color" style="background:#172554"></div><div class="swatch-meta"><p class="swatch-name">900</p><p class="swatch-hex">#172554</p></div></div>
+      <div class="swatch-card"><div class="swatch-color" style="background:#2563eb"></div><div class="swatch-meta"><p class="swatch-name">700</p><p class="swatch-hex">#2563eb</p></div></div>
+      <div class="swatch-card"><div class="swatch-color" style="background:#22d3ee"></div><div class="swatch-meta"><p class="swatch-name">300 · hover</p><p class="swatch-hex">#22d3ee</p></div></div>
+      <div class="swatch-card"><div class="swatch-color" style="background:#67e8f9"></div><div class="swatch-meta"><p class="swatch-name">200</p><p class="swatch-hex">#67e8f9</p></div></div>
+    </div>
+
+    <div class="grid grid-4" style="margin-top:16px">
+      <div class="swatch-card"><div class="swatch-color" style="background:#0a0a0a; border-bottom:1px solid var(--border-default)"></div><div class="swatch-meta"><p class="swatch-name">Near black</p><p class="swatch-hex">#0a0a0a</p><p class="swatch-token">--bg-page</p></div></div>
+      <div class="swatch-card"><div class="swatch-color" style="background:#18181b"></div><div class="swatch-meta"><p class="swatch-name">Surface</p><p class="swatch-hex">#18181b</p><p class="swatch-token">--bg-surface</p></div></div>
+      <div class="swatch-card"><div class="swatch-color" style="background:#71717a"></div><div class="swatch-meta"><p class="swatch-name">Muted</p><p class="swatch-hex">#71717a</p><p class="swatch-token">--fg-muted</p></div></div>
+      <div class="swatch-card"><div class="swatch-color" style="background:#f5f0e6"></div><div class="swatch-meta"><p class="swatch-name" style="color:#0a0a0a">Cream</p><p class="swatch-hex" style="color:#52525b">#f5f0e6</p></div></div>
+    </div>
+  </section>
+
+  <!-- 03 TYPE -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Tipografía</h2>
+      <span class="sec-sub">Geist · Geist Mono</span>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="type-card">
+        <h1 class="type-spec-h1">Konzert</h1>
+        <div class="type-meta"><span>Geist · 900</span><span>56px</span><span>tracking -0.045em</span></div>
+      </div>
+      <div class="type-card">
+        <h2 class="type-spec-h2">Bad Bunny en Movistar Arena</h2>
+        <p class="type-spec-body">Encuentra los próximos conciertos, partidos, obras y stand-up que mejor encajan con tus gustos.</p>
+        <div class="type-meta"><span>H2 · 24/700</span><span>Body · 16/400</span></div>
+      </div>
+      <div class="type-card">
+        <p class="type-spec-mono">/ EVENTO · 1.4K SIGUIENDO</p>
+        <p class="type-spec-mono" style="color:var(--fg-very-muted); margin-top:8px">$ npm install konzert</p>
+        <div class="type-meta"><span>Geist Mono · 14px</span><span>tracking 0.12em</span></div>
+      </div>
+      <div class="type-card">
+        <p style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--fg-muted); margin:0">EYEBROW · LABEL</p>
+        <p style="font-size:14px; color:var(--fg-secondary); margin:8px 0 0">Small body para metadata, fechas, y descripciones secundarias.</p>
+        <div class="type-meta"><span>Label · 11/400</span><span>Small · 14/400</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 COMPONENTS -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">Componentes</h2>
+      <span class="sec-sub">Buttons · Pills · Inputs · Cards</span>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="comp-card">
+        <span class="comp-label">Buttons</span>
+        <div style="display:flex; gap:12px; flex-wrap:wrap">
+          <button class="btn btn-primary">Buscar eventos</button>
+          <button class="btn btn-secondary">Ver mapa</button>
+          <button class="btn btn-ghost">Saltar →</button>
+        </div>
+      </div>
+      <div class="comp-card">
+        <span class="comp-label">Pills · Tags</span>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <span class="pill pill-cobalt">● en vivo</span>
+          <span class="pill pill-neutral">música</span>
+          <span class="pill pill-neutral">deporte</span>
+          <span class="pill pill-neutral">teatro</span>
+          <span class="pill pill-neutral">comedia</span>
+        </div>
+      </div>
+      <div class="comp-card">
+        <span class="comp-label">Input</span>
+        <input class="input" placeholder="Bad Bunny, Boca, Les Luthiers..."/>
+        <input class="input" value="Buenos Aires" style="border-color:var(--accent)"/>
+      </div>
+      <div class="comp-card">
+        <span class="comp-label">Event Card</span>
+        <div class="event-card">
+          <div class="event-cover">
+            <span class="tag">música</span>
+          </div>
+          <div class="event-meta">
+            <h3 class="event-title">Dua Lipa · Radical Optimism Tour</h3>
+            <p class="event-sub">15 Mayo · Estadio River · desde $45.000</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 APP MOCK -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">Aplicación</h2>
+      <span class="sec-sub">Home · descubrimiento</span>
+    </div>
+
+    <div style="background:var(--color-near-black); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden; position:relative;">
+      <div style="position:absolute; inset:0; background: radial-gradient(ellipse at 80% -20%, var(--color-glow-deep), transparent 50%), radial-gradient(ellipse at -10% 80%, var(--color-glow-cobalt), transparent 50%); pointer-events:none;"></div>
+
+      <div style="position:relative; padding:20px 24px; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:space-between; backdrop-filter:blur(12px);">
+        <div style="display:flex; align-items:center; gap:10px">
+          <img src="assets/konzert-logo.svg" width="28" height="28"/>
+          <span style="font-size:16px; font-weight:800; letter-spacing:-0.03em">konzert</span>
+        </div>
+        <div style="display:flex; gap:24px; font-size:13px; color:var(--fg-secondary)">
+          <span style="color:var(--fg-primary)">Descubrir</span><span>Mapa</span><span>Mis eventos</span>
+        </div>
+        <div style="width:32px; height:32px; border-radius:999px; background:var(--gradient-cobalt)"></div>
+      </div>
+
+      <div style="position:relative; padding:48px 24px 32px;">
+        <p class="eyebrow" style="margin:0 0 12px">PARA TI · 24 EVENTOS NUEVOS</p>
+        <h1 style="font-size:48px; font-weight:900; letter-spacing:-0.04em; line-height:1; margin:0 0 28px; max-width:600px;">
+          Esta semana hay <span style="background:var(--gradient-cobalt); -webkit-background-clip:text; background-clip:text; color:transparent">algo para ti</span>
+        </h1>
+        <input class="input" placeholder="Bad Bunny, Les Luthiers, partido del domingo..." style="max-width:520px"/>
+      </div>
+
+      <div style="position:relative; padding:0 24px 32px">
+        <div class="grid grid-3">
+          <div class="event-card">
+            <div class="event-cover" style="background: radial-gradient(ellipse at 30% 30%, rgba(6,182,212,0.6), transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(30,58,138,0.7), transparent 60%), #0a0a0a;">
+              <span class="tag">música</span>
+            </div>
+            <div class="event-meta">
+              <h3 class="event-title">Tame Impala</h3>
+              <p class="event-sub">Sáb 9 May · Movistar Arena</p>
+            </div>
+          </div>
+          <div class="event-card">
+            <div class="event-cover" style="background: radial-gradient(ellipse at 60% 30%, rgba(34,211,238,0.5), transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(23,37,84,0.8), transparent 60%), #0a0a0a;">
+              <span class="tag">comedia</span>
+            </div>
+            <div class="event-meta">
+              <h3 class="event-title">Sebastián Wainraich</h3>
+              <p class="event-sub">Vie 15 May · Teatro Vorterix</p>
+            </div>
+          </div>
+          <div class="event-card">
+            <div class="event-cover" style="background: radial-gradient(ellipse at 70% 50%, rgba(6,182,212,0.45), transparent 60%), radial-gradient(ellipse at 30% 50%, rgba(30,58,138,0.7), transparent 60%), #0a0a0a;">
+              <span class="tag">deporte</span>
+            </div>
+            <div class="event-meta">
+              <h3 class="event-title">Boca vs River</h3>
+              <p class="event-sub">Dom 17 May · La Bombonera</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Konzert · Design System · v2.0 — Cobalto</span>
+    <span>#1e3a8a → #06b6d4</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
