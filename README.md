@@ -1,4 +1,4 @@
-# EventosSTGO
+# Konzert
 
 Plataforma web que muestra eventos en Santiago de Chile en un mapa interactivo, permite comprar entradas y notifica a los usuarios cuando sus artistas favoritos anuncian shows en el país.
 
