@@ -1,0 +1,26 @@
+{
+  "name": "@konzert/workers",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@konzert/database": "workspace:*",
+    "@konzert/emails": "workspace:*",
+    "@konzert/scraper": "workspace:*",
+    "@konzert/types": "workspace:*",
+    "bullmq": "^5.34.8",
+    "ioredis": "^5.4.2"
+  },
+  "devDependencies": {
+    "@konzert/config": "workspace:*",
+    "@types/node": "^22.10.7",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

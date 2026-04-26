@@ -1,0 +1,26 @@
+{
+  "name": "@konzert/emails",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "email dev --dir src/templates --port 3001",
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@react-email/components": "^0.0.32",
+    "react": "^19.1.0",
+    "react-email": "^3.0.4",
+    "resend": "^4.0.1"
+  },
+  "devDependencies": {
+    "@konzert/config": "workspace:*",
+    "@types/react": "^19.1.0",
+    "typescript": "^5.7.3"
+  }
+}

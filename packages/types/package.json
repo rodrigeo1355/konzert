@@ -1,0 +1,17 @@
+{
+  "name": "@konzert/types",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@konzert/config": "workspace:*",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "extends": "@konzert/config/tsconfig/node",
+  "include": ["src", "prisma"]
+}

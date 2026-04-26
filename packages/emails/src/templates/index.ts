@@ -1,0 +1,1 @@
+export { EventAnnouncementEmail } from "./EventAnnouncement"
