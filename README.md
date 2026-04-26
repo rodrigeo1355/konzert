@@ -1,4 +1,4 @@
-# EventosSTGO
+# Konzert
 
 Plataforma web que muestra eventos en Santiago de Chile en un mapa interactivo, permite comprar entradas y notifica a los usuarios cuando sus artistas favoritos anuncian shows en el país.
 
@@ -150,8 +150,8 @@ Plataforma web que muestra eventos en Santiago de Chile en un mapa interactivo, 
 ### 1. Clonar e instalar dependencias
 
 ```bash
-git clone https://github.com/TU_USUARIO/eventosstgo.git
-cd eventosstgo
+git clone https://github.com/rodrigeo1355/konzert.git
+cd konzert
 pnpm install
 ```
 
@@ -165,8 +165,8 @@ Edita `.env` con tus valores. Las variables marcadas con `*` son obligatorias pa
 
 ```bash
 # * Base de datos (Docker lo levanta automáticamente)
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/eventosstgo"
-DIRECT_URL="postgresql://postgres:postgres@localhost:5432/eventosstgo"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/konzert"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5432/konzert"
 
 # * Redis (Docker lo levanta automáticamente)
 REDIS_URL="redis://localhost:6379"
@@ -184,10 +184,10 @@ SPOTIFY_CLIENT_SECRET=""
 
 # Email — necesario para notificaciones (opcional en desarrollo)
 RESEND_API_KEY=""
-EMAIL_FROM="noreply@eventosstgo.cl"
+EMAIL_FROM="noreply@konzert.cl"
 
 # Admin alerts
-ADMIN_ALERT_EMAIL="admin@eventosstgo.cl"
+ADMIN_ALERT_EMAIL="admin@konzert.cl"
 
 # Scraper
 SCRAPER_INTERVAL_HOURS=6
@@ -280,7 +280,7 @@ Crear el primer usuario admin:
 
 ```bash
 pnpm tsx packages/database/src/scripts/create-admin.ts \
-  --email admin@eventosstgo.cl \
+  --email admin@konzert.cl \
   --password "TuContraseñaSegura1!"
 ```
 
