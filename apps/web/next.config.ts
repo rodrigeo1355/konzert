@@ -3,6 +3,7 @@ import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@konzert/database", "@konzert/types", "@konzert/emails"],
+  serverExternalPackages: ["argon2"],
 }
 
 export default withPayload(nextConfig)

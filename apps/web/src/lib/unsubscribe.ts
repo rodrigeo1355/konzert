@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto"
+import { createHmac } from "crypto"
 
 const secret = () => process.env.AUTH_SECRET ?? "dev-secret-change-in-production"
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@konzert/database"
 import { sendEmail, AccountSuspendedEmail, PasswordResetEmail } from "@konzert/emails"
-import { randomBytes } from "node:crypto"
+import { randomBytes } from "crypto"
 import * as React from "react"
 
 async function requireAdmin() {

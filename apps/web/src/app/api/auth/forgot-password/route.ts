@@ -3,7 +3,7 @@ import { prisma } from "@konzert/database"
 import { sendEmail, PasswordResetEmail } from "@konzert/emails"
 import { checkRateLimit } from "@/lib/rate-limit"
 import * as React from "react"
-import crypto from "node:crypto"
+import crypto from "crypto"
 
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for") ?? "unknown"

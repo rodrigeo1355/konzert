@@ -16,9 +16,10 @@ export default async function ProfileLayout({ children }: { children: ReactNode 
             <Image
               src="/konzert-wordmark.svg"
               alt="Konzert"
-              width={90}
+              width={126}
               height={24}
               priority
+              unoptimized
             />
           </Link>
           <div className="flex items-center gap-5 text-sm text-white/40 ml-auto">

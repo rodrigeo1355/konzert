@@ -16,9 +16,10 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         <Image
           src="/konzert-wordmark.svg"
           alt="Konzert"
-          width={120}
+          width={168}
           height={32}
           priority
+          unoptimized
         />
         {children}
       </div>

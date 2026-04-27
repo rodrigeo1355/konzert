@@ -11,12 +11,14 @@ import {
 
 export const metadata = { title: "Nueva contraseña — Konzert" }
 
-export default function ResetPasswordPage({
+export default async function ResetPasswordPage({
   searchParams,
 }: {
-  searchParams: { token?: string }
+  searchParams: Promise<{ token?: string }>
 }) {
-  if (!searchParams.token) {
+  const { token } = await searchParams
+
+  if (!token) {
     return (
       <Card className="w-full">
         <CardHeader className="text-center pb-4">
@@ -39,7 +41,7 @@ export default function ResetPasswordPage({
         <CardDescription>Elige una contraseña segura para tu cuenta.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ResetPasswordForm token={searchParams.token} />
+        <ResetPasswordForm token={token} />
       </CardContent>
     </Card>
   )
