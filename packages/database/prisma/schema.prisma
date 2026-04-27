@@ -227,12 +227,14 @@ model Notification {
   eventId   String
   type      NotificationType
   sentAt    DateTime         @default(now())
+  readAt    DateTime?
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@unique([userId, eventId, type])
   @@index([userId])
+  @@index([userId, readAt])
 }
 
 // ─── Audit ────────────────────────────────────────────────────────────────────

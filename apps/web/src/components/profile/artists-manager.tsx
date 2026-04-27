@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback, useTransition } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { UserCheck, UserPlus, Loader2, Music2, Search } from "lucide-react"
+import { UserCheck, UserPlus, Loader2, Music2, Search, Map } from "lucide-react"
 import { useDebounce } from "@/lib/use-debounce"
+import Link from "next/link"
 
 interface Artist {
   id: string
@@ -170,9 +171,21 @@ export function ArtistsManager() {
           Siguiendo ({following.length}/50)
         </p>
         {following.length === 0 ? (
-          <p className="text-sm text-white/40 py-6 text-center">
-            Todavía no sigues ningún artista. Búscalos arriba.
-          </p>
+          <div className="flex flex-col items-center gap-4 py-8 text-center">
+            <Music2 className="h-10 w-10 text-white/10" />
+            <div>
+              <p className="text-sm text-white/40">Todavía no sigues ningún artista.</p>
+              <p className="text-xs text-white/25 mt-1">
+                Búscalos arriba o encuéntralos en el mapa.
+              </p>
+            </div>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/map">
+                <Map className="h-4 w-4" />
+                Explorar el mapa
+              </Link>
+            </Button>
+          </div>
         ) : (
           following.map((artist) => (
             <div

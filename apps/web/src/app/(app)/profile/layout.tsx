@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import type { ReactNode } from "react"
+import { NotificationNavLink } from "@/components/profile/notification-badge"
 
 export default async function ProfileLayout({ children }: { children: ReactNode }) {
   const session = await auth()
@@ -29,12 +30,7 @@ export default async function ProfileLayout({ children }: { children: ReactNode 
             >
               Artistas
             </Link>
-            <Link
-              href="/profile/notifications"
-              className="hover:text-white transition-colors"
-            >
-              Notificaciones
-            </Link>
+            <NotificationNavLink />
           </div>
         </div>
       </nav>
