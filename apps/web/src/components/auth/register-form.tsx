@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react"
-import { validatePasswordStrength } from "@/lib/password"
+import { validatePasswordStrength } from "@/lib/password-validation"
 
 function Requirement({ met, label }: { met: boolean; label: string }) {
   return (
