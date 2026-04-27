@@ -2,6 +2,7 @@ import { Worker } from "bullmq"
 import * as React from "react"
 import { prisma } from "@konzert/database"
 import { scrapers } from "@konzert/scraper"
+import { geocodeAddress, matchArtists, type ArtistRecord } from "@konzert/scraper/utils"
 import { sendEmail, ScraperAlertEmail } from "@konzert/emails"
 import { redis } from "../redis"
 import { SCRAPER_QUEUE, type ScraperJobData } from "../queues/scraper"
@@ -13,7 +14,7 @@ const FAIL_THRESHOLD = 2
 async function checkAndAlertConsecutiveFails(platform: string, error: string) {
   const key = CONSECUTIVE_FAIL_KEY(platform)
   const count = await redis.incr(key)
-  await redis.expire(key, 60 * 60 * 24) // reset after 24h of no new failures
+  await redis.expire(key, 60 * 60 * 24)
 
   if (count >= FAIL_THRESHOLD) {
     const adminEmail = process.env.ADMIN_ALERT_EMAIL
@@ -28,6 +29,38 @@ async function checkAndAlertConsecutiveFails(platform: string, error: string) {
         lastError: error,
         timestamp: new Date().toISOString(),
       }),
+    })
+  }
+}
+
+async function geocodeVenueIfNeeded(venueId: string, venueName: string, address: string) {
+  const raw = await prisma.$queryRaw<Array<{ has_location: boolean }>>`
+    SELECT location IS NOT NULL AS has_location FROM "Venue" WHERE id = ${venueId}
+  `
+  if (raw[0]?.has_location) return
+
+  const coords = await geocodeAddress(venueName, address)
+  if (!coords) return
+
+  await prisma.$executeRaw`
+    UPDATE "Venue"
+    SET location = ST_SetSRID(ST_MakePoint(${coords.lng}, ${coords.lat}), 4326)
+    WHERE id = ${venueId}
+  `
+}
+
+async function linkArtistsToEvent(
+  eventId: string,
+  eventTitle: string,
+  artistNames: string[],
+  allArtists: ArtistRecord[]
+) {
+  const matches = matchArtists(eventTitle, artistNames, allArtists)
+  for (const { artistId, matchScore } of matches) {
+    await prisma.eventArtist.upsert({
+      where: { eventId_artistId: { eventId, artistId } },
+      update: { matchScore },
+      create: { eventId, artistId, matchScore },
     })
   }
 }
@@ -53,18 +86,25 @@ export const scraperWorker = new Worker<ScraperJobData>(
     let errorMessage: string | null = null
 
     try {
-      const result = await scraper.scrape()
+      const [result, allArtists] = await Promise.all([
+        scraper.scrape(),
+        prisma.artist.findMany({ select: { id: true, nameNormalized: true } }),
+      ])
 
       for (const scraped of result.events) {
+        const venueId = `venue-${scraped.venueName.toLowerCase().replace(/\s+/g, "-")}`
+
         const venue = await prisma.venue.upsert({
-          where: { id: `venue-${scraped.venueName.toLowerCase().replace(/\s+/g, "-")}` },
+          where: { id: venueId },
           update: {},
           create: {
-            id: `venue-${scraped.venueName.toLowerCase().replace(/\s+/g, "-")}`,
+            id: venueId,
             name: scraped.venueName,
             address: scraped.venueAddress,
           },
         })
+
+        void geocodeVenueIfNeeded(venue.id, venue.name, venue.address ?? "").catch(console.error)
 
         const existing = await prisma.event.findFirst({
           where: {
@@ -94,7 +134,8 @@ export const scraperWorker = new Worker<ScraperJobData>(
             create: { eventId: existing.id, platform: platform as never, ticketUrl: scraped.ticketUrl },
           })
 
-          // Si el evento acaba de pasar a ON_SALE, notificar
+          void linkArtistsToEvent(existing.id, existing.title, scraped.artistNames, allArtists).catch(console.error)
+
           if (prevSaleStatus !== "ON_SALE" && existing.status === "PUBLISHED") {
             void notifyAffectedUsers(existing.id, "SALE_OPENED").catch(console.error)
           }
@@ -119,7 +160,7 @@ export const scraperWorker = new Worker<ScraperJobData>(
             data: { eventId: event.id, platform: platform as never, ticketUrl: scraped.ticketUrl },
           })
 
-          // Notificar evento anunciado (solo si ya tiene artistas asignados)
+          void linkArtistsToEvent(event.id, event.title, scraped.artistNames, allArtists).catch(console.error)
           void notifyAffectedUsers(event.id, "EVENT_ANNOUNCED").catch(console.error)
 
           eventsNew++
@@ -142,7 +183,6 @@ export const scraperWorker = new Worker<ScraperJobData>(
         },
       })
 
-      // reset consecutive fail counter on success
       await redis.del(CONSECUTIVE_FAIL_KEY(platform))
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
