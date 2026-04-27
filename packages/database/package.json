@@ -15,11 +15,16 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint ."
   },
+  "prisma": {
+    "schema": "prisma/schema.prisma",
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^6.2.1"
   },
   "devDependencies": {
     "@konzert/config": "workspace:*",
+    "@types/node": "^22.0.0",
     "prisma": "^6.2.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"

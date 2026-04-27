@@ -11,6 +11,8 @@
     "db:migrate": "turbo run db:migrate --filter=@konzert/database",
     "db:seed": "turbo run db:seed --filter=@konzert/database",
     "db:studio": "turbo run db:studio --filter=@konzert/database",
+    "scraper:run": "turbo run scraper:run --filter=@konzert/workers -- ",
+    "email:preview": "turbo run dev --filter=@konzert/emails",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {

@@ -8,6 +8,8 @@ export interface ScrapedEvent {
   platform: string
   artistNames: string[]
   imageUrl?: string
+  priceMin?: number
+  priceMax?: number
 }
 
 export interface ScraperResult {
@@ -16,3 +18,5 @@ export interface ScraperResult {
   errors: string[]
   durationMs: number
 }
+
+export type PlatformKey = "PUNTOTICKET" | "TICKETMASTER" | "PASSLINE" | "JOINNUS" | "FINTIX"

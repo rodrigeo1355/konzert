@@ -1,0 +1,253 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [postgis]
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  REJECTED
+}
+
+enum SaleStatus {
+  UPCOMING
+  ON_SALE
+  SOLD_OUT
+}
+
+enum Platform {
+  PUNTOTICKET
+  TICKETMASTER
+  PASSLINE
+  EVENTBRITE
+  OTHER
+}
+
+enum ScraperStatus {
+  SUCCESS
+  PARTIAL
+  FAILED
+}
+
+enum NotificationType {
+  EVENT_ANNOUNCED
+  SALE_OPENED
+}
+
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id                   String     @id @default(cuid())
+  email                String     @unique
+  passwordHash         String
+  role                 Role       @default(USER)
+  status               UserStatus @default(ACTIVE)
+  emailVerified        DateTime?
+  failedLoginCount     Int        @default(0)
+  lockedUntil          DateTime?
+  notifyEventAnnounced Boolean    @default(true)
+  notifySaleOpened     Boolean    @default(true)
+  unsubscribeToken     String?    @unique
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  deletedAt            DateTime?
+
+  sessions       Session[]
+  passwordResets PasswordReset[]
+  followedArtists UserArtist[]
+  notifications  Notification[]
+  auditLogs      AuditLog[]
+
+  @@index([email])
+  @@index([deletedAt])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model PasswordReset {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+}
+
+// ─── Artists ──────────────────────────────────────────────────────────────────
+
+model Artist {
+  id             String   @id @default(cuid())
+  name           String
+  nameNormalized String
+  imageUrl       String?
+  spotifyId      String?  @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  followers     UserArtist[]
+  eventArtists  EventArtist[]
+
+  @@index([nameNormalized])
+}
+
+model UserArtist {
+  userId    String
+  artistId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  artist Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  @@id([userId, artistId])
+  @@index([userId])
+}
+
+// ─── Venues ───────────────────────────────────────────────────────────────────
+
+model Venue {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  city      String   @default("Santiago")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events Event[]
+
+  @@index([name])
+}
+
+// ─── Events ───────────────────────────────────────────────────────────────────
+
+model Event {
+  id             String      @id @default(cuid())
+  title          String
+  description    String?
+  imageUrl       String?
+  dateStart      DateTime
+  dateEnd        DateTime?
+  venueId        String
+  status         EventStatus @default(DRAFT)
+  saleStatus     SaleStatus  @default(UPCOMING)
+  priceMin       Int?
+  priceMax       Int?
+  manuallyEdited Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  venue         Venue          @relation(fields: [venueId], references: [id])
+  artists       EventArtist[]
+  platforms     EventPlatform[]
+  notifications Notification[]
+
+  @@index([status, dateStart])
+  @@index([venueId])
+}
+
+model EventArtist {
+  eventId    String
+  artistId   String
+  matchScore Float    @default(0)
+  createdAt  DateTime @default(now())
+
+  event  Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  artist Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, artistId])
+}
+
+model EventPlatform {
+  id        String   @id @default(cuid())
+  eventId   String
+  platform  Platform
+  ticketUrl String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, platform])
+}
+
+// ─── Scraper ──────────────────────────────────────────────────────────────────
+
+model ScraperRun {
+  id            String        @id @default(cuid())
+  platform      String
+  status        ScraperStatus
+  eventsNew     Int           @default(0)
+  eventsUpdated Int           @default(0)
+  errorMessage  String?
+  durationMs    Int?
+  startedAt     DateTime      @default(now())
+  finishedAt    DateTime?
+
+  @@index([platform, startedAt])
+}
+
+// ─── Notifications ────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  eventId   String
+  type      NotificationType
+  sentAt    DateTime         @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId, type])
+  @@index([userId])
+}
+
+// ─── Audit ────────────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  action     String
+  targetType String
+  targetId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([targetType, targetId])
+}

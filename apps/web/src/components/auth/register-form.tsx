@@ -1,0 +1,105 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { CheckCircle2, XCircle, Loader2 } from "lucide-react"
+import { validatePasswordStrength } from "@/lib/password"
+
+function Requirement({ met, label }: { met: boolean; label: string }) {
+  return (
+    <li className="flex items-center gap-1.5 text-xs">
+      {met ? (
+        <CheckCircle2 className="h-3.5 w-3.5 text-green-600 shrink-0" />
+      ) : (
+        <XCircle className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+      )}
+      <span className={met ? "text-green-700" : "text-muted-foreground"}>{label}</span>
+    </li>
+  )
+}
+
+export function RegisterForm() {
+  const router = useRouter()
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const strength = validatePasswordStrength(password)
+  const showRequirements = password.length > 0
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (!strength.isValid) return
+
+    setLoading(true)
+    setError(null)
+
+    const form = new FormData(e.currentTarget)
+    const email = form.get("email") as string
+
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    })
+
+    if (!res.ok) {
+      const data = await res.json() as { error?: string }
+      setError(data.error ?? "Ocurrió un error. Intenta de nuevo.")
+      setLoading(false)
+      return
+    }
+
+    await signIn("credentials", { email, password, redirect: false })
+    router.push("/")
+    router.refresh()
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {error && (
+        <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>
+      )}
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="tu@email.com"
+          required
+        />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="password">Contraseña</Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        {showRequirements && (
+          <ul className="mt-1 flex flex-col gap-1">
+            <Requirement met={strength.minLength} label="Mínimo 8 caracteres" />
+            <Requirement met={strength.hasUppercase} label="Al menos 1 mayúscula" />
+            <Requirement met={strength.hasLowercase} label="Al menos 1 minúscula" />
+            <Requirement met={strength.hasNumber} label="Al menos 1 número" />
+            <Requirement met={strength.hasSpecial} label="Al menos 1 carácter especial (!@#$%^&*)" />
+          </ul>
+        )}
+      </div>
+      <Button type="submit" className="w-full mt-2" disabled={loading || !strength.isValid}>
+        {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+        Crear cuenta
+      </Button>
+    </form>
+  )
+}

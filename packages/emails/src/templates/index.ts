@@ -1,1 +1,5 @@
 export { EventAnnouncementEmail } from "./EventAnnouncement"
+export { SaleOpenedEmail } from "./SaleOpened"
+export { PasswordResetEmail } from "./PasswordReset"
+export { AccountLockedEmail } from "./AccountLocked"
+export { ScraperAlertEmail } from "./ScraperAlert"

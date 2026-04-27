@@ -2,7 +2,9 @@
   "extends": "@konzert/config/tsconfig/node",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "jsx": "react-jsx",
+    "types": ["node"]
   },
   "include": ["src"]
 }
