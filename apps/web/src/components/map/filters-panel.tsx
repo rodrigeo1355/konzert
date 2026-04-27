@@ -55,33 +55,36 @@ export function FiltersPanel() {
   const hasActiveFilters = from || to || maxPrice || radius !== "5000"
 
   return (
-    <div className="flex flex-col gap-4 p-4 bg-card border rounded-xl shadow-sm">
+    <div className="flex flex-col gap-4 p-4 bg-[#111111]/95 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <SlidersHorizontal className="h-4 w-4" />
+        <div className="flex items-center gap-2 text-sm font-medium text-white/80">
+          <SlidersHorizontal className="h-4 w-4 text-[#06b6d4]" />
           Filtros
         </div>
         {hasActiveFilters && (
-          <Button variant="ghost" size="sm" onClick={clearAll} className="h-7 px-2 text-xs">
-            <X className="h-3 w-3 mr-1" />
+          <button
+            onClick={clearAll}
+            className="flex items-center gap-1 text-xs text-white/40 hover:text-[#06b6d4] transition-colors"
+          >
+            <X className="h-3 w-3" />
             Limpiar
-          </Button>
+          </button>
         )}
       </div>
 
       {/* Radio */}
-      <div className="flex flex-col gap-1.5">
-        <Label className="text-xs text-muted-foreground">Radio</Label>
-        <div className="flex gap-1 flex-wrap">
+      <div className="flex flex-col gap-2">
+        <Label>Radio</Label>
+        <div className="flex gap-1.5 flex-wrap">
           {RADIUS_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               onClick={() => update("radius", String(opt.value))}
               className={[
-                "px-2.5 py-1 rounded-full text-xs border transition-colors",
+                "px-2.5 py-1 rounded-full text-xs border transition-all",
                 String(opt.value) === radius
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-background border-input hover:bg-accent",
+                  ? "bg-[#06b6d4]/20 text-[#06b6d4] border-[#06b6d4]/50"
+                  : "bg-white/5 text-white/50 border-white/10 hover:border-white/25 hover:text-white/80",
               ].join(" ")}
             >
               {opt.label}
@@ -93,9 +96,7 @@ export function FiltersPanel() {
       {/* Fechas */}
       <div className="grid grid-cols-2 gap-2">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="from" className="text-xs text-muted-foreground">
-            Desde
-          </Label>
+          <Label htmlFor="from">Desde</Label>
           <Input
             id="from"
             type="date"
@@ -105,9 +106,7 @@ export function FiltersPanel() {
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="to" className="text-xs text-muted-foreground">
-            Hasta
-          </Label>
+          <Label htmlFor="to">Hasta</Label>
           <Input
             id="to"
             type="date"
@@ -120,9 +119,7 @@ export function FiltersPanel() {
 
       {/* Precio máximo */}
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="maxPrice" className="text-xs text-muted-foreground">
-          Precio máximo (CLP)
-        </Label>
+        <Label htmlFor="maxPrice">Precio máximo (CLP)</Label>
         <Input
           id="maxPrice"
           type="number"
@@ -136,7 +133,7 @@ export function FiltersPanel() {
       </div>
 
       {isPending && (
-        <p className="text-xs text-muted-foreground text-center">Actualizando...</p>
+        <p className="text-xs text-white/30 text-center">Actualizando…</p>
       )}
     </div>
   )

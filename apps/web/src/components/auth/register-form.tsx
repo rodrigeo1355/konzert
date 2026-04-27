@@ -13,11 +13,11 @@ function Requirement({ met, label }: { met: boolean; label: string }) {
   return (
     <li className="flex items-center gap-1.5 text-xs">
       {met ? (
-        <CheckCircle2 className="h-3.5 w-3.5 text-green-600 shrink-0" />
+        <CheckCircle2 className="h-3.5 w-3.5 text-[#06b6d4] shrink-0" />
       ) : (
-        <XCircle className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+        <XCircle className="h-3.5 w-3.5 text-white/20 shrink-0" />
       )}
-      <span className={met ? "text-green-700" : "text-muted-foreground"}>{label}</span>
+      <span className={met ? "text-[#06b6d4]" : "text-white/40"}>{label}</span>
     </li>
   )
 }
@@ -62,7 +62,7 @@ export function RegisterForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {error && (
-        <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>
+        <p className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-2.5 text-sm text-destructive">{error}</p>
       )}
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="email">Email</Label>

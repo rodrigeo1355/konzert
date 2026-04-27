@@ -9,6 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+export const metadata = { title: "Nueva contraseña — Konzert" }
+
 export default function ResetPasswordPage({
   searchParams,
 }: {
@@ -16,13 +18,13 @@ export default function ResetPasswordPage({
 }) {
   if (!searchParams.token) {
     return (
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Enlace inválido</CardTitle>
-          <CardDescription>Este enlace ya no es válido.</CardDescription>
+      <Card className="w-full">
+        <CardHeader className="text-center pb-4">
+          <CardTitle className="text-xl">Enlace inválido</CardTitle>
+          <CardDescription>Este enlace expiró o ya fue utilizado.</CardDescription>
         </CardHeader>
-        <CardFooter className="justify-center text-sm">
-          <Link href="/forgot-password" className="text-foreground font-medium hover:underline">
+        <CardFooter className="justify-center text-sm text-muted-foreground">
+          <Link href="/forgot-password" className="text-[#06b6d4] font-semibold hover:text-[#22d3ee] transition-colors">
             Solicitar un nuevo enlace
           </Link>
         </CardFooter>
@@ -31,9 +33,9 @@ export default function ResetPasswordPage({
   }
 
   return (
-    <Card>
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Nueva contraseña</CardTitle>
+    <Card className="w-full">
+      <CardHeader className="text-center pb-4">
+        <CardTitle className="text-xl">Nueva contraseña</CardTitle>
         <CardDescription>Elige una contraseña segura para tu cuenta.</CardDescription>
       </CardHeader>
       <CardContent>

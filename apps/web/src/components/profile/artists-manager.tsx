@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef, useTransition } from "react"
+import { useState, useEffect, useCallback, useTransition } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { UserCheck, UserPlus, Loader2, Music2, Search } from "lucide-react"
@@ -14,11 +14,11 @@ interface Artist {
 
 function ArtistAvatar({ artist }: { artist: Artist }) {
   return (
-    <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0">
+    <div className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
       {artist.imageUrl ? (
         <img src={artist.imageUrl} alt={artist.name} className="h-full w-full object-cover" />
       ) : (
-        <Music2 className="h-5 w-5 text-muted-foreground" />
+        <Music2 className="h-5 w-5 text-white/30" />
       )}
     </div>
   )
@@ -28,14 +28,13 @@ export function ArtistsManager() {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<Artist[]>([])
   const [following, setFollowing] = useState<Artist[]>([])
-  const [pending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [limitReached, setLimitReached] = useState(false)
   const [searching, setSearching] = useState(false)
 
   const debouncedQuery = useDebounce(query, 300)
 
-  // Cargar artistas seguidos
   useEffect(() => {
     fetch("/api/artists/following")
       .then((r) => r.json() as Promise<Artist[]>)
@@ -43,7 +42,6 @@ export function ArtistsManager() {
       .catch(() => {})
   }, [])
 
-  // Búsqueda con debounce
   useEffect(() => {
     if (debouncedQuery.length < 2) {
       setResults([])
@@ -69,7 +67,6 @@ export function ArtistsManager() {
         return
       }
       setLoadingId(artist.id)
-      // Optimistic update
       setFollowing((prev) => [artist, ...prev])
 
       const res = await fetch(`/api/artists/${artist.id}/follow`, { method: "POST" })
@@ -84,12 +81,10 @@ export function ArtistsManager() {
 
   const unfollow = useCallback(async (artistId: string) => {
     setLoadingId(artistId)
-    // Optimistic update
     setFollowing((prev) => prev.filter((a) => a.id !== artistId))
 
     const res = await fetch(`/api/artists/${artistId}/follow`, { method: "DELETE" })
     if (!res.ok) {
-      // Revertir si falla — recargamos la lista
       fetch("/api/artists/following")
         .then((r) => r.json() as Promise<Artist[]>)
         .then(setFollowing)
@@ -105,7 +100,7 @@ export function ArtistsManager() {
     <div className="flex flex-col gap-6">
       {/* Buscador */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
         <Input
           placeholder="Buscar artista..."
           value={query}
@@ -113,44 +108,44 @@ export function ArtistsManager() {
           className="pl-9"
         />
         {searching && (
-          <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+          <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-white/30" />
         )}
       </div>
 
       {limitReached && (
-        <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
+        <p className="text-sm text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2.5 rounded-xl">
           Alcanzaste el límite de 50 artistas. Deja de seguir alguno para agregar más.
         </p>
       )}
 
       {/* Resultados de búsqueda */}
       {showResults && (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5">
           {results.length === 0 && !searching ? (
-            <p className="text-sm text-muted-foreground py-4 text-center">
+            <p className="text-sm text-white/40 py-4 text-center">
               No encontramos &quot;{debouncedQuery}&quot;
             </p>
           ) : (
             results.map((artist) => {
-              const following_ = isFollowing(artist.id)
+              const followed = isFollowing(artist.id)
               const loading = loadingId === artist.id
               return (
                 <div
                   key={artist.id}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-accent transition-colors"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors"
                 >
                   <ArtistAvatar artist={artist} />
-                  <span className="text-sm font-medium flex-1">{artist.name}</span>
+                  <span className="text-sm font-medium flex-1 text-white">{artist.name}</span>
                   <Button
                     size="sm"
-                    variant={following_ ? "outline" : "default"}
-                    onClick={() => (following_ ? unfollow(artist.id) : follow(artist))}
+                    variant={followed ? "outline" : "default"}
+                    onClick={() => (followed ? unfollow(artist.id) : follow(artist))}
                     disabled={loading}
                     className="shrink-0 w-28"
                   >
                     {loading ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : following_ ? (
+                    ) : followed ? (
                       <>
                         <UserCheck className="h-4 w-4" />
                         Siguiendo
@@ -170,28 +165,28 @@ export function ArtistsManager() {
       )}
 
       {/* Lista de seguidos */}
-      <div className="flex flex-col gap-1">
-        <p className="text-xs font-medium text-muted-foreground mb-1">
+      <div className="flex flex-col gap-0.5">
+        <p className="text-xs font-medium text-white/30 uppercase tracking-widest mb-2">
           Siguiendo ({following.length}/50)
         </p>
         {following.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-6 text-center">
+          <p className="text-sm text-white/40 py-6 text-center">
             Todavía no sigues ningún artista. Búscalos arriba.
           </p>
         ) : (
           following.map((artist) => (
             <div
               key={artist.id}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-accent transition-colors"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors"
             >
               <ArtistAvatar artist={artist} />
-              <span className="text-sm font-medium flex-1">{artist.name}</span>
+              <span className="text-sm font-medium flex-1 text-white">{artist.name}</span>
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => unfollow(artist.id)}
                 disabled={loadingId === artist.id}
-                className="shrink-0 text-muted-foreground hover:text-destructive"
+                className="shrink-0 text-white/30 hover:text-destructive hover:bg-destructive/10"
               >
                 {loadingId === artist.id ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

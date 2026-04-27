@@ -71,7 +71,7 @@ export function MapContainer() {
     if (!navigator.geolocation) return
     navigator.geolocation.getCurrentPosition(
       (pos) => setMapCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => {} // fallback silencioso → Plaza de Armas
+      () => {}
     )
   }, [])
 
@@ -80,7 +80,7 @@ export function MapContainer() {
   }, [])
 
   return (
-    <div className="relative w-full h-screen">
+    <div className="relative w-full h-screen bg-black">
       {/* Mapa */}
       <EventMap
         events={events}
@@ -97,9 +97,9 @@ export function MapContainer() {
 
       {/* Sin resultados */}
       {!loading && events.length === 0 && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-card border rounded-xl px-6 py-4 shadow-lg text-center">
-          <p className="font-medium text-sm">No hay eventos con estos filtros</p>
-          <p className="text-xs text-muted-foreground mt-1">Intenta ampliar el radio o cambiar las fechas</p>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-[#111111]/95 backdrop-blur-md border border-white/10 rounded-2xl px-6 py-5 shadow-xl text-center">
+          <p className="font-semibold text-sm text-white">No hay eventos con estos filtros</p>
+          <p className="text-xs text-white/40 mt-1">Intenta ampliar el radio o cambiar las fechas</p>
         </div>
       )}
 
@@ -112,7 +112,7 @@ export function MapContainer() {
 
       {/* Loading indicator */}
       {loading && (
-        <div className="absolute top-4 right-16 z-10 bg-card/90 backdrop-blur-sm border rounded-lg px-3 py-1.5 text-xs text-muted-foreground shadow">
+        <div className="absolute top-4 right-16 z-10 bg-[#111111]/90 backdrop-blur-sm border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white/40 shadow-lg">
           Cargando eventos…
         </div>
       )}

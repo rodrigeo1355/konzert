@@ -9,37 +9,39 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+export const metadata = { title: "Ingresar — Konzert" }
+
 export default function LoginPage({
   searchParams,
 }: {
   searchParams: { error?: string; callbackUrl?: string }
 }) {
   return (
-    <Card>
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Konzert</CardTitle>
-        <CardDescription>Ingresa a tu cuenta</CardDescription>
+    <Card className="w-full">
+      <CardHeader className="text-center pb-4">
+        <CardTitle className="text-xl">Bienvenido de vuelta</CardTitle>
+        <CardDescription>Ingresa a tu cuenta de Konzert</CardDescription>
       </CardHeader>
       <CardContent>
         {searchParams.error === "ACCOUNT_LOCKED" && (
-          <p className="mb-4 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            Tu cuenta fue bloqueada por múltiples intentos fallidos. Intenta en 15 minutos.
+          <p className="mb-4 rounded-xl bg-destructive/10 px-4 py-2.5 text-sm text-destructive border border-destructive/20">
+            Cuenta bloqueada por múltiples intentos. Intenta en 15 minutos.
           </p>
         )}
         {searchParams.error === "CredentialsSignin" && (
-          <p className="mb-4 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          <p className="mb-4 rounded-xl bg-destructive/10 px-4 py-2.5 text-sm text-destructive border border-destructive/20">
             Email o contraseña incorrectos.
           </p>
         )}
         <LoginForm callbackUrl={searchParams.callbackUrl} />
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm text-muted-foreground">
-        <Link href="/forgot-password" className="hover:text-foreground transition-colors">
+        <Link href="/forgot-password" className="hover:text-[#06b6d4] transition-colors">
           ¿Olvidaste tu contraseña?
         </Link>
         <span>
           ¿No tienes cuenta?{" "}
-          <Link href="/register" className="text-foreground font-medium hover:underline">
+          <Link href="/register" className="text-[#06b6d4] font-semibold hover:text-[#22d3ee] transition-colors">
             Crear cuenta
           </Link>
         </span>

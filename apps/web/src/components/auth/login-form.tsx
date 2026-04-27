@@ -47,7 +47,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {error && (
-        <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>
+        <p className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-2.5 text-sm text-destructive">{error}</p>
       )}
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="email">Email</Label>

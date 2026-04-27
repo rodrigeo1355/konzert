@@ -6,24 +6,24 @@ export const metadata = { title: "Desuscripción exitosa — Konzert" }
 
 export default function UnsubscribedPage() {
   return (
-    <Card>
-      <CardHeader className="text-center">
-        <div className="flex justify-center mb-2">
-          <CheckCircle2 className="h-10 w-10 text-green-500" />
+    <Card className="w-full">
+      <CardHeader className="text-center pb-4">
+        <div className="flex justify-center mb-3">
+          <CheckCircle2 className="h-10 w-10 text-[#06b6d4]" />
         </div>
-        <CardTitle>Listo</CardTitle>
+        <CardTitle className="text-xl">Listo</CardTitle>
         <CardDescription>
           Actualizamos tus preferencias. Ya no recibirás ese tipo de notificaciones.
         </CardDescription>
       </CardHeader>
-      <CardContent className="text-center text-sm text-muted-foreground">
+      <CardContent className="text-center text-sm text-muted-foreground pb-2">
         Puedes volver a activarlas en cualquier momento desde tu perfil.
       </CardContent>
-      <CardFooter className="justify-center gap-4 text-sm">
-        <Link href="/profile/notifications" className="text-foreground font-medium hover:underline">
+      <CardFooter className="justify-center gap-6 text-sm">
+        <Link href="/profile/notifications" className="text-[#06b6d4] font-semibold hover:text-[#22d3ee] transition-colors">
           Gestionar notificaciones
         </Link>
-        <Link href="/map" className="text-muted-foreground hover:text-foreground transition-colors">
+        <Link href="/map" className="text-muted-foreground hover:text-[#06b6d4] transition-colors">
           Ir al mapa
         </Link>
       </CardFooter>
