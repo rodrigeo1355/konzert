@@ -19,10 +19,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Run DB migrations
-        run: pnpm db:migrate
+        run: cd packages/database && npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Deploy to Vercel
         run: |
