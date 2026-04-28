@@ -76,7 +76,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
     const followed = await prisma.userArtist.findMany({
       where: {
         userId: session.user.id,
-        artistId: { in: event.artists.map((ea) => ea.artistId) },
+        artistId: { in: event.artists.map((ea: { artistId: string }) => ea.artistId) },
       },
       select: { artistId: true },
     })
