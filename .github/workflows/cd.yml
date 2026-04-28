@@ -40,6 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: deploy-web
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - name: Deploy to Railway
