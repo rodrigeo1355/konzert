@@ -80,7 +80,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
       },
       select: { artistId: true },
     })
-    followedArtistIds = new Set(followed.map((ua) => ua.artistId))
+    followedArtistIds = new Set(followed.map((ua: { artistId: string }) => ua.artistId))
   }
 
   return (
