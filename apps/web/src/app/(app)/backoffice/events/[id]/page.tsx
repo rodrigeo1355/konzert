@@ -6,10 +6,11 @@ import { ArrowLeft } from "lucide-react"
 
 export const metadata = { title: "Editar evento — Backoffice Konzert" }
 
-export default async function EditEventPage({ params }: { params: { id: string } }) {
+export default async function EditEventPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const [event, venues] = await Promise.all([
     prisma.event.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         platforms: { take: 1 },
       },

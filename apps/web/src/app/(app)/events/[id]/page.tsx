@@ -10,10 +10,11 @@ import type { Metadata } from "next"
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }): Promise<Metadata> {
+  const { id } = await params
   const event = await prisma.event.findUnique({
-    where: { id: params.id, status: "PUBLISHED" },
+    where: { id, status: "PUBLISHED" },
     select: { title: true, description: true, imageUrl: true },
   })
   if (!event) return { title: "Evento — Konzert" }
@@ -54,10 +55,11 @@ function formatPrice(min: number | null, max: number | null): string {
   return `${fmt(min)} — ${fmt(max)}`
 }
 
-export default async function EventPage({ params }: { params: { id: string } }) {
+export default async function EventPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const [event, session] = await Promise.all([
     prisma.event.findUnique({
-      where: { id: params.id, status: "PUBLISHED" },
+      where: { id, status: "PUBLISHED" },
       include: {
         venue: true,
         artists: { include: { artist: true }, orderBy: { matchScore: "desc" } },
