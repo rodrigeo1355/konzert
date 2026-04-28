@@ -23,6 +23,9 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
+      - name: Generate Prisma Client
+        run: cd packages/database && npx prisma generate
+
       - name: Deploy to Vercel
         run: |
           pnpm dlx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}

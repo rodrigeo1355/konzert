@@ -142,7 +142,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
         <TicketSection
           eventId={event.id}
           saleStatus={event.saleStatus}
-          platforms={event.platforms.map((p) => ({
+          platforms={event.platforms.map((p: { id: string; platform: string; ticketUrl: string }) => ({
             id: p.id,
             platform: p.platform,
             ticketUrl: p.ticketUrl,
