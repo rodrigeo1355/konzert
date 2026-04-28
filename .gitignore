@@ -32,3 +32,4 @@ packages/database/prisma/migrations/*.sql.bak
 
 # Test coverage
 coverage
+.vercel

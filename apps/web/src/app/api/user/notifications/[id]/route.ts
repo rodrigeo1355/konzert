@@ -2,12 +2,13 @@ import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@konzert/database"
 
-export async function PATCH(_req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const session = await auth()
   if (!session?.user?.id) return NextResponse.json({ error: "No autenticado." }, { status: 401 })
 
   const notification = await prisma.notification.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     select: { userId: true },
   })
 
@@ -16,7 +17,7 @@ export async function PATCH(_req: Request, { params }: { params: { id: string } 
   }
 
   await prisma.notification.update({
-    where: { id: params.id },
+    where: { id: id },
     data: { readAt: new Date() },
   })
 

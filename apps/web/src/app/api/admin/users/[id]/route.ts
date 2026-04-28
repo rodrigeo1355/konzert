@@ -12,14 +12,15 @@ async function requireAdmin() {
   return session.user as { id: string }
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const body = (await req.json()) as { action: "block" | "unblock" | "force-reset" }
 
   const user = await prisma.user.findUnique({
-    where: { id: params.id, deletedAt: null },
+    where: { id: id, deletedAt: null },
     select: { id: true, email: true, status: true },
   })
   if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 })
