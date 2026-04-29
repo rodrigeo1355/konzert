@@ -41,22 +41,38 @@ export function RegisterForm() {
     const form = new FormData(e.currentTarget)
     const email = form.get("email") as string
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    })
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
 
-    if (!res.ok) {
-      const data = await res.json() as { error?: string }
-      setError(data.error ?? "Ocurrió un error. Intenta de nuevo.")
+      if (!res.ok) {
+        let message = "Ocurrió un error. Intenta de nuevo."
+        try {
+          const data = await res.json() as { error?: string }
+          message = data.error ?? message
+        } catch {
+          // response body not JSON — keep generic message
+        }
+        setError(message)
+        return
+      }
+
+      const result = await signIn("credentials", { email, password, redirect: false })
+      if (result?.error) {
+        setError("Cuenta creada, pero no pudimos iniciar sesión automáticamente. Ingresa manualmente.")
+        return
+      }
+
+      router.push("/")
+      router.refresh()
+    } catch {
+      setError("Error de conexión. Verifica tu internet e intenta de nuevo.")
+    } finally {
       setLoading(false)
-      return
     }
-
-    await signIn("credentials", { email, password, redirect: false })
-    router.push("/")
-    router.refresh()
   }
 
   return (
