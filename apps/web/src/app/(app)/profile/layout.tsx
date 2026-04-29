@@ -31,6 +31,12 @@ export default async function ProfileLayout({ children }: { children: ReactNode 
               Artistas
             </Link>
             <NotificationNavLink />
+            <Link
+              href="/profile/settings"
+              className="hover:text-white transition-colors"
+            >
+              Configuración
+            </Link>
           </div>
         </div>
       </nav>
