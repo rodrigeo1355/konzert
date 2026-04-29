@@ -161,18 +161,20 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
                   key={artist.id}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors"
                 >
-                  <div className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
-                    {artist.imageUrl ? (
-                      <img
-                        src={artist.imageUrl}
-                        alt={artist.name}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <Music2 className="h-5 w-5 text-white/30" />
-                    )}
-                  </div>
-                  <span className="text-sm font-medium flex-1 text-white">{artist.name}</span>
+                  <Link href={`/artists/${artist.id}`} className="flex items-center gap-3 flex-1 min-w-0 group/artist">
+                    <div className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                      {artist.imageUrl ? (
+                        <img
+                          src={artist.imageUrl}
+                          alt={artist.name}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <Music2 className="h-5 w-5 text-white/30" />
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-white group-hover/artist:text-[#06b6d4] transition-colors">{artist.name}</span>
+                  </Link>
                   {session?.user ? (
                     <FollowArtistButton
                       artistId={artist.id}

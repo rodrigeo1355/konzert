@@ -17,7 +17,7 @@ export const authConfig = {
     },
     authorized({ auth, request }) {
       const { pathname } = request.nextUrl
-      const publicPaths = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/map", "/unsubscribed"]
+      const publicPaths = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/map", "/unsubscribed", "/artists", "/events"]
       if (publicPaths.some((p) => pathname === p || pathname.startsWith(p + "?"))) return true
       return !!auth?.user
     },
