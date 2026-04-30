@@ -42,10 +42,11 @@ jobs:
     needs: deploy-web
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to Railway
-        uses: bervProject/railway-deploy@main
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        with:
-          service: workers
+      - name: Trigger Railway redeploy
+        run: |
+          curl -s -X POST https://backboard.railway.app/graphql/v2 \
+            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "query": "mutation { serviceInstanceRedeploy(environmentId: \"ed6adb4d-572d-41c1-a407-f9c378c81aba\", serviceId: \"a67732b2-efe5-4eb7-bb5c-0ee5f917bb93\") }"
+            }' | grep -q '"serviceInstanceRedeploy":true' && echo "Deploy triggered" || (echo "Deploy failed" && exit 1)
