@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useRef, useCallback } from "react"
-import mapboxgl from "mapbox-gl"
-import "mapbox-gl/dist/mapbox-gl.css"
+import { useEffect, useRef } from "react"
+import maplibregl from "maplibre-gl"
+import "maplibre-gl/dist/maplibre-gl.css"
 import type { MapEvent, MapFilters } from "@/lib/types"
 
-const SANTIAGO = { lat: -33.4489, lng: -70.6693 }
+const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
 
 interface EventMapProps {
   events: MapEvent[]
@@ -23,24 +23,22 @@ export function EventMap({
   onMapMove,
 }: EventMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const mapRef = useRef<mapboxgl.Map | null>(null)
-  const markersRef = useRef<mapboxgl.Marker[]>([])
+  const mapRef = useRef<maplibregl.Map | null>(null)
+  const markersRef = useRef<maplibregl.Marker[]>([])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
 
-    mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? ""
-
-    const map = new mapboxgl.Map({
+    const map = new maplibregl.Map({
       container: containerRef.current,
-      style: "mapbox://styles/mapbox/dark-v11",
+      style: MAP_STYLE,
       center: [filters.lng, filters.lat],
       zoom: 12,
     })
 
-    map.addControl(new mapboxgl.NavigationControl(), "top-right")
+    map.addControl(new maplibregl.NavigationControl(), "top-right")
     map.addControl(
-      new mapboxgl.GeolocateControl({
+      new maplibregl.GeolocateControl({
         positionOptions: { enableHighAccuracy: true },
         trackUserLocation: false,
       }),
@@ -61,7 +59,6 @@ export function EventMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Actualiza marcadores cuando cambian los eventos
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
@@ -85,7 +82,7 @@ export function EventMap({
 
       el.addEventListener("click", () => onEventSelect(event))
 
-      const marker = new mapboxgl.Marker({ element: el })
+      const marker = new maplibregl.Marker({ element: el })
         .setLngLat([event.lng, event.lat])
         .addTo(map)
 
@@ -93,7 +90,6 @@ export function EventMap({
     }
   }, [events, selectedEventId, onEventSelect])
 
-  // Centra el mapa en el evento seleccionado
   useEffect(() => {
     const map = mapRef.current
     if (!map || !selectedEventId) return

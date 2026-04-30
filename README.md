@@ -19,7 +19,7 @@ Plataforma web que muestra eventos en Santiago de Chile en un mapa interactivo, 
 |------|-----------|
 | Frontend + API | Next.js 15 (App Router) · TypeScript |
 | UI | Tailwind CSS · shadcn/ui |
-| Mapa | Mapbox GL JS |
+| Mapa | MapLibre GL JS + CARTO tiles |
 | Auth | Auth.js v5 (credentials) |
 | ORM | Prisma |
 | Base de datos | PostgreSQL + PostGIS |
@@ -174,9 +174,6 @@ REDIS_URL="redis://localhost:6379"
 # * Auth — genera con: openssl rand -base64 32
 AUTH_SECRET=""
 AUTH_URL="http://localhost:3000"
-
-# * Mapbox — crea cuenta gratuita en mapbox.com
-NEXT_PUBLIC_MAPBOX_TOKEN=""
 
 # Spotify — necesario para importar artistas (opcional en desarrollo)
 SPOTIFY_CLIENT_ID=""
