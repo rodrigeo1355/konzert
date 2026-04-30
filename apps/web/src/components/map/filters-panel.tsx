@@ -4,8 +4,8 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { useCallback, useTransition } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { SlidersHorizontal, X } from "lucide-react"
+import { DatePicker } from "./date-picker"
 
 const RADIUS_OPTIONS = [
   { label: "1 km", value: 1000 },
@@ -93,28 +93,18 @@ export function FiltersPanel() {
         </div>
       </div>
 
-      {/* Fechas */}
       <div className="grid grid-cols-2 gap-2">
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="from">Desde</Label>
-          <Input
-            id="from"
-            type="date"
-            value={from}
-            onChange={(e) => update("from", e.target.value)}
-            className="h-8 text-xs"
-          />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="to">Hasta</Label>
-          <Input
-            id="to"
-            type="date"
-            value={to}
-            onChange={(e) => update("to", e.target.value)}
-            className="h-8 text-xs"
-          />
-        </div>
+        <DatePicker
+          label="Desde"
+          value={from}
+          onChange={(iso) => update("from", iso)}
+        />
+        <DatePicker
+          label="Hasta"
+          value={to}
+          onChange={(iso) => update("to", iso)}
+          minDate={from ? new Date(from + "T00:00:00") : undefined}
+        />
       </div>
 
       {/* Precio máximo */}
