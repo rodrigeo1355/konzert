@@ -33,3 +33,10 @@ packages/database/prisma/migrations/*.sql.bak
 # Test coverage
 coverage
 .vercel
+
+# Binarios (evitar commits accidentales de ejecutables)
+*.x86
+*.x86_64
+*.arm
+*.arm64
+*.mips

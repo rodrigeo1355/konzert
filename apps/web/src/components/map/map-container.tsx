@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react"
 import { useSearchParams } from "next/navigation"
+import Link from "next/link"
+import { List } from "lucide-react"
 import { EventMap } from "./event-map"
 import { EventCard } from "./event-card"
 import { FiltersPanel } from "./filters-panel"
@@ -110,9 +112,20 @@ export function MapContainer() {
         </div>
       )}
 
+      {/* Botón vista lista — esquina superior derecha */}
+      <div className="absolute top-4 right-4 z-10">
+        <Link
+          href="/events"
+          className="flex items-center gap-2 text-sm text-white/60 hover:text-white bg-[#111111]/90 backdrop-blur-sm border border-white/10 hover:border-white/25 rounded-xl px-3 py-2 transition-all shadow-lg"
+        >
+          <List className="h-4 w-4" />
+          Lista
+        </Link>
+      </div>
+
       {/* Loading indicator */}
       {loading && (
-        <div className="absolute top-4 right-16 z-10 bg-[#111111]/90 backdrop-blur-sm border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white/40 shadow-lg">
+        <div className="absolute top-4 right-24 z-10 bg-[#111111]/90 backdrop-blur-sm border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white/40 shadow-lg">
           Cargando eventos…
         </div>
       )}
